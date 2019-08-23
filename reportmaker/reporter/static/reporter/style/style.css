@@ -1,0 +1,9 @@
+.form .input-group-prepend,
+.filters .input-group-prepend {
+	width: 5em;
+}
+
+.form .input-group-prepend .input-group-text,
+.filters .input-group-prepend .input-group-text {
+	width: 100%;
+}

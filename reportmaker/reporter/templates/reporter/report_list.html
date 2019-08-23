@@ -1,0 +1,92 @@
+{% extends "reporter/base.html" %}
+
+{% load static %}
+
+{% block title %}List of reports{% endblock %}
+
+{% block links %}
+	<link href="{% static 'reporter/style/style.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block after_scripts %}
+{% endblock %}
+
+{% block content %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-5 col-md-5 col-lg-4">
+				<div class="card filters">
+					<div class="card-body">
+						<h5 class="card-title">Filters</h5>
+						<form action="" id="filter_form" method="get" class="text-right">
+							<div class="input-group mb-2">
+								<div class="input-group-prepend">
+									<span class="input-group-text">id</span>
+								</div>
+								<input class="form-control" name="id_filter" form="filter_form" placeholder="Filter by id" value="{{ filters.id|default:'' }}">
+							</div>
+							<div class="input-group mb-2">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Title</span>
+								</div>
+								<input class="form-control" name="title_filter" placeholder="Filter by title" value="{{ filters.title|default:'' }}">
+							</div>
+							<div class="input-group mb-2">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Content</span>
+								</div>
+								<input class="form-control" name="content_filter"  placeholder="Filter by content" value="{{ filters.content|default:'' }}">
+							</div>
+							<div class="input-group mb-2">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Date</span>
+								</div>
+								<input class="form-control" name="date_filter" placeholder="Filter by date" value="{{ filters.date|default:'' }}">
+							</div>
+							<button class="btn btn-info" type="submit" style="width: 7em;">Filter</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-7 col-lg-8">
+				<div class="card">
+					<div class="card-body" style="overflow-x: auto;">
+						<table class="table table-light table-hover">
+							<thead class="thead-light">
+								<tr>
+									<th>ID</th>
+									<th>Title</th>
+									<th>Content</th>
+									<th>Date&nbsp;published</th>
+									<th></th>
+								</tr>
+							</thead>
+							{% if report_list %}
+								{% for report in report_list %}
+									<tr>
+										<td>{{ report.id }}</td>
+										<td><a href="{% url 'reporter:report' report.id %}">{{ report.title_text }}</a></td>
+										<td>{{ report.content_text }}</td>
+										<td>{{ report.pub_date }}</td>
+										<td><a href="{% url 'reporter:report_edit' report.id %}">Edit</a><br><a href="{% url 'reporter:report_remove' report.id %}">Remove</a></td>
+									</tr>
+								{% endfor %}
+								<tr>
+									<td></td>
+									<td colspan="4"><a href="{% url 'reporter:create' %}">Add report</a></td>
+								</tr>
+							{% else %}
+								<tr>
+									<td class="text-center" colspan="5">Nothing to show</td>
+								</tr>
+							{% endif %}
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+{% endblock %}

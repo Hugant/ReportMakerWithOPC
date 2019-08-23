@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link href="{% static 'reporter/style/bootstrap.min.css' %}" rel="stylesheet">
+	{% block links %} {% endblock %}
+	<title>{% block title %}{% endblock %}</title>
+	{% block before_scripts %} {% endblock %}
+
+</head>
+<body class="bg-dark">
+	{% block header %}
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" href="{% url 'reporter:index' %}">ReportMaker</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+		      <li class="nav-item">
+		        <a class="nav-link" href="{% url 'reporter:index' %}">Home</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="{% url 'reporter:reports' %}">Reports</a>
+		      </li>
+					<li class="nav-item">
+		        <a class="nav-link" href="{% url 'reporter:create' %}">Add report</a>
+		      </li>
+		    </ul>
+
+				{% if user.is_authenticated %}
+					<ul class="navbar-nav mr-3 ml-auto">
+			      <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown"
+			           aria-haspopup="true" aria-expanded="false">{{ user.username }}</a>
+				      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="{% url 'reporter:logout' %}">Logout</a>
+	        </div>
+			      </li>
+					</ul>
+					<form class="form-inline my-2 my-lg-0" action="{% url 'reporter:reports' %}" method="get">
+			      <input class="form-control mr-sm-2" name="id_filter" type="search" placeholder="Find your report" aria-label="Search">
+			      <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+			    </form>
+				{% else %}
+					<ul class="navbar-nav mr-3 ml-auto">
+			      <li class="nav-item">
+							<a href="{% url 'reporter:login' %}" class="btn btn-outline-info my-2 my-sm-0">Login</a>
+			      </li>
+					</ul>
+				{% endif %}
+			</div>
+		</nav>
+	{% endblock %}
+	<div class="content pt-4">
+		{% block content %} {% endblock %}
+	</div>
+
+	{% block footer %} {% endblock %}
+</body>
+<script src="{% static 'reporter/js/core/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'reporter/js/core/popper.min.js' %}"></script>
+<script src="{% static 'reporter/js/core/bootstrap.min.js' %}"></script>
+{% block after_scripts %} {% endblock %}
+</html>

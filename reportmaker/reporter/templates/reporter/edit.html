@@ -1,0 +1,41 @@
+{% extends "reporter/base.html" %}
+
+{% load static %}
+
+{% block title %}Report edit{% endblock %}
+
+{% block links %}
+	<link href="{% static 'reporter/style/style.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block after_scripts %}
+{% endblock %}
+
+{% block content %}
+	<div class="container d-flex justify-content-center">
+		<div class="card form">
+			<div class="card-body">
+				<form class="p-3 d-flex flex-column" style="width: 500px" action="{% url 'reporter:report_edit' report.id %}" method="post">
+					{% csrf_token %}
+					<h5 class="card-title">Edit report</h5>
+					<div class="input-group mb-2">
+						<div class="input-group-prepend">
+							<span class="input-group-text">Title</span>
+						</div>
+						<input class="form-control" type="text" name="title_text" maxlength="200" value="{{ report.title_text }}" required >
+					</div>
+					<div class="input-group mb-2">
+						<div class="input-group-prepend">
+							<span class="input-group-text">Content</span>
+						</div>
+						<input class="form-control" type="text" name="content_text" maxlength="1000" value="{{ report.content_text }}" required >
+					</div>
+					<div class="d-flex justify-content-between">
+						<a class="btn btn-secondary text-white" href="{% url 'reporter:reports' %}">Reports</a>
+						<input class="btn btn-primary" type="submit" value="Edit" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
