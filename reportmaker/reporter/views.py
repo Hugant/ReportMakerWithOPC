@@ -111,7 +111,8 @@ def remove(request, report_id):
 
 @login_required()
 def create(request):
-	import random
+	import updater
+	import OpenOPC
 
 	if request.method == 'POST':
 		form = ReportForm(request.POST)
@@ -121,22 +122,23 @@ def create(request):
 			pub = timezone.now()
 			report = Report(title_text=title, content_text=content, pub_date=pub)
 			report.save()
+			#
+			# opc = OpenOPC.client()
+			# opc.connect('Matrikon.OPC.Simulation')
+			# process = opc.read('Random.Int4')
+			# process_name = report.title_text + " - " + "process #" + str(Process.objects.all().filter(report=report.id).distinct().count())
+			# process = Process(
+			# 	report_id=report.id,
+			# 	name_text=process_name,
+			# 	state_text=process[1],
+			# 	ram_in_kb_int=process[0],
+			# 	date=timezone.now())
+			# process.save()
+			# print(process)
+			# report.process_set.add(process)
+			# print('created')
 
-			states = ["working", "error", "danger", "warning", "off", "paused"]
-
-			for i in range(0, random.randint(1, 5)):
-				process_name = title + " - " + "process #" + str(i)
-				process_state = states[random.randint(0, len(states) - 1)]
-				process_ram = random.randint(500, 5000)
-				process = Process(
-					report_id=report.id,
-					name_text=process_name,
-					state_text=process_state,
-					ram_in_kb_int=process_ram,
-					date=timezone.now())
-				process.save()
-				report.process_set.add(process)
-
+			updater.start()
 			return HttpResponseRedirect('/reports/' + str(report.id))
 	else:
 		return render(request, 'reporter/create.html')
@@ -144,7 +146,7 @@ def create(request):
 
 @login_required()
 def edit(request, report_id):
-	report = Report.objects.get(id=report_id)
+	report = get_object_or_404(Report, id=report_id)
 	if request.method == 'POST':
 		report.title_text = request.POST.get('title_text')
 		report.content_text = request.POST.get('content_text')

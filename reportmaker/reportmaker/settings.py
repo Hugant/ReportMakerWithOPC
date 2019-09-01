@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reporter',
+    'reporter.apps.ReporterConfig',
 ]
 
 MIDDLEWARE = [
@@ -107,7 +107,7 @@ LOGIN_URL = '/login'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Krasnoyarsk'
 
 USE_I18N = True
 
