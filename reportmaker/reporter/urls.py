@@ -15,4 +15,7 @@ urlpatterns = [
 	url(r'^reports/(?P<report_id>[0-9]+)/$', views.ProcessListView.as_view(), name='report'),
 	url(r'^reports/(?P<report_id>[0-9]+)/edit/$', views.edit, name='report_edit'),
 	url(r'^reports/(?P<report_id>[0-9]+)/remove/$', views.remove, name='report_remove'),
+	url(r'^reports/(?P<report_id>[0-9]+)/download/word$', views.download_word, name='download_word'),
+	url(r'^reports/(?P<report_id>[0-9]+)/download/excel$', views.download_excel, name='download_excel'),
 ]
+
