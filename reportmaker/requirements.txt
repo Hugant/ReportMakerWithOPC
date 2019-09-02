@@ -1,7 +1,10 @@
 APScheduler==3.6.1
 Django==1.11.23
+et-xmlfile==1.0.1
 funcsigs==1.0.2
 futures==3.3.0
+jdcal==1.4.1
+openpyxl==2.6.3
 pytz==2019.2
 pywin32==224
 six==1.12.0
