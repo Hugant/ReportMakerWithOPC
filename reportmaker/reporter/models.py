@@ -7,7 +7,7 @@ class Report(models.Model):
 	title_text = models.CharField(max_length=200)
 	content_text = models.CharField(max_length=1000)
 	pub_date = models.DateTimeField()
-	interval_update = models.IntegerField(default=1)
+	interval_update = models.IntegerField(default=30)
 
 	def __str__(self):
 		return self.title_text
