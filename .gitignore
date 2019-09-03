@@ -2,3 +2,5 @@
 .idea
 venv
 *.pyc
+reportmaker/__init__.py
+reportmaker/reporter/migrations/0003_auto_20190902_0036.py
