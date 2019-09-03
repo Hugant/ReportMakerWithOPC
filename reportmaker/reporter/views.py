@@ -39,7 +39,7 @@ class ReportListView(LoginRequiredMixin, generic.ListView):
 			if self.filters['content']:
 				reports = reports.filter(content_text__startswith=self.filters['content'])
 
-			# TODO: filter by date
+		# TODO: filter by date
 
 		return reports
 
@@ -82,7 +82,7 @@ class ProcessListView(LoginRequiredMixin, generic.ListView):
 			if self.filters['ram']:
 				processes = processes.filter(ram_in_kb_int__startswith=int(self.filters['ram']))
 
-			# TODO: filter by date
+		# TODO: filter by date
 
 		return processes
 
@@ -148,7 +148,9 @@ def download_excel(request, report_id):
 	from openpyxl.styles import Font, Alignment
 	from openpyxl.utils import get_column_letter
 
-	file_name = 'report ' + str(report_id) + '.xlsx'
+	# TODO: Need to paste title and content of report
+
+	file_name = 'Report ' + str(report_id) + '.xlsx'
 
 	wb = Workbook()
 	ws = wb.active
@@ -173,11 +175,11 @@ def download_excel(request, report_id):
 	processes = Process.objects.all().filter(report=report_id)
 
 	for i, process in enumerate(processes):
-		ws.cell(row=i+2, column=1, value=processes[i].id)
-		ws.cell(row=i+2, column=2, value=processes[i].name_text)
-		ws.cell(row=i+2, column=3, value=processes[i].state_text)
-		ws.cell(row=i+2, column=4, value=processes[i].ram_in_kb_int)
-		ws.cell(row=i+2, column=5, value=processes[i].date)
+		ws.cell(row=i + 2, column=1, value=processes[i].id)
+		ws.cell(row=i + 2, column=2, value=processes[i].name_text)
+		ws.cell(row=i + 2, column=3, value=processes[i].state_text)
+		ws.cell(row=i + 2, column=4, value=processes[i].ram_in_kb_int)
+		ws.cell(row=i + 2, column=5, value=processes[i].date)
 
 	column_widths = []
 
@@ -214,12 +216,51 @@ def download_excel(request, report_id):
 
 	return response
 
+
 @login_required()
 def download_word(request, report_id):
-	pass
+	import docx
+
+	file_name = 'Report ' + str(report_id) + '.docx'
+
+	report = Report.objects.get(id=report_id)
+
+	doc = docx.Document()
+
+	doc.add_heading("Report " + str(report_id) + " - " + report.title_text, 0)
+	doc.add_paragraph("Description: " + report.content_text, 'List Paragraph')
+	doc.add_paragraph("Created: " + str(report.pub_date), 'List Paragraph').runs[0].style = 'Subtle Emphasis'
+
+	processes = Process.objects.all().filter(report=report_id)
+
+	for process in processes:
+		doc.add_heading("Process " + str(process.id) + " - " + process.name_text, 1)
+		doc.add_paragraph("State: ", 'List Bullet').add_run(process.state_text).bold = True
+		doc.add_paragraph("RAM (kb): ", 'List Bullet').add_run(str(process.ram_in_kb_int)).bold = True
+		doc.add_paragraph("Date: ", 'List Bullet').add_run(str(process.date)).bold = True
+
+	doc.save(file_name)
+
+	f = open(file_name, 'rb')
+	response = HttpResponse(f.read())
+	f.close()
+
+	file_type = mimetypes.guess_type(file_name)
+	if file_type is None:
+		file_type = 'application/octet-stream'
+
+	response['Content-Type'] = file_type
+	response['Content-Length'] = str(os.stat(file_name).st_size)
+	response['Content-Disposition'] = "attachment; filename=%s" % file_name
+
+	os.remove(file_name)
+
+	return response
 
 
 def user_login(request):
+	# TODO: Fix bug with bad redirect after login
+
 	next_page = ""
 	if request.method == 'GET':
 		next_page = request.GET.get('next')
@@ -250,4 +291,3 @@ def user_login(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('')
-
