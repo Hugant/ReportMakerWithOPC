@@ -25,19 +25,31 @@
 										<div class="input-group-prepend">
 											<span class="input-group-text">id</span>
 										</div>
-										<input class="form-control" name="id_filter" form="filter_form" placeholder="Filter by id" value="{{ filters.id|default:'' }}">
+										<input class="form-control" name="id_filter" form="filter_form" placeholder="Enter report id" value="{{ filters.id|default:'' }}">
 									</div>
 									<div class="input-group mb-2">
 										<div class="input-group-prepend">
 											<span class="input-group-text">Name</span>
 										</div>
-										<input class="form-control" name="name_filter" placeholder="Filter by name" value="{{ filters.name|default:'' }}">
+										<input class="form-control" name="name_filter" placeholder="Enter phrase in name" value="{{ filters.name|default:'' }}">
+										<select class="custom-select bg-light" name="name_match" style="max-width: 8em">
+											<option value="exact" {% if filters.name_match == "exact" %}selected{% endif %}}}>Exact match</option>
+											<option value="starts" {% if filters.name_match == "starts" %}selected{% endif %}>Starts with</option>
+											<option value="contains" {% if filters.name_match == "contains" %}selected{% endif %}>Contains</option>
+											<option value="ends" {% if filters.name_match == "ends" %}selected{% endif %}>Ends with</option>
+										</select>
 									</div>
 									<div class="input-group mb-2">
 										<div class="input-group-prepend">
 											<span class="input-group-text">State</span>
 										</div>
 										<input class="form-control" name="state_filter"  placeholder="Filter by state" value="{{ filters.state|default:'' }}">
+										<select class="custom-select bg-light" name="state_match" style="max-width: 8em">
+											<option value="exact" {% if filters.state_match == "exact" %}selected{% endif %}>Exact match</option>
+											<option value="starts" {% if filters.state_match == "starts" %}selected{% endif %}>Starts with</option>
+											<option value="contains" {% if filters.state_match == "contains" %}selected{% endif %}>Contains</option>
+											<option value="ends" {% if filters.state_match == "ends" %}selected{% endif %}>Ends with</option>
+										</select>
 									</div>
 									<div class="input-group mb-2">
 										<div class="input-group-prepend">
@@ -51,13 +63,19 @@
 										</div>
 										<input class="form-control" name="date_filter" placeholder="Filter by date" value="{{ filters.date|default:'' }}">
 									</div>
+									<a href="{% url 'reporter:report' report.id %}" class="btn btn-outline-danger">Clear</a>
 									<button class="btn btn-info" type="submit" style="width: 7em;">Filter</button>
 								</form>
 							</div>
 						</div>
-						<div class="d-flex p-2">
-							<a class="btn btn-outline-info w-100 mr-1" href="{% url 'reporter:download_excel' report.id %}">Excel</a>
-							<a class="btn btn-outline-info w-100 ml-1" href="{% url 'reporter:download_word' report.id %}">Word</a>
+						<div class="card mt-3">
+							<div class="card-body">
+								<h5 class="card-title">Download this report</h5>
+								<div class="d-flex">
+									<a class="btn btn-outline-info w-100 mr-1" href="{% url 'reporter:download_excel' report.id %}">Excel</a>
+									<a class="btn btn-outline-info w-100 ml-1" href="{% url 'reporter:download_word' report.id %}">Word</a>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-6 col-md-7 col-lg-8">
@@ -73,21 +91,19 @@
 											<th>Date</th>
 										</tr>
 									</thead>
-									{% if process_list %}
-										{% for process in process_list %}
-											<tr>
-												<td>{{ process.id }}</td>
-												<td>{{ process.name_text }}</td>
-												<td>{{ process.state_text }}</td>
-												<td>{{ process.ram_in_kb_int }}</td>
-												<td>{{ process.date }}</td>
-											</tr>
-										{% endfor %}
-									{% else %}
+									{% for process in process_list %}
+										<tr>
+											<td>{{ process.id }}</td>
+											<td>{{ process.name_text }}</td>
+											<td>{{ process.state_text }}</td>
+											<td>{{ process.ram_in_kb_int }}</td>
+											<td>{{ process.date }}</td>
+										</tr>
+									{% empty %}
 										<tr>
 											<td class="text-center" colspan="5">Nothing to show</td>
 										</tr>
-									{% endif %}
+									{% endfor %}
 									</thead>
 								</table>
 							</div>

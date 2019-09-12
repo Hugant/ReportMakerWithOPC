@@ -7,3 +7,15 @@
 .filters .input-group-prepend .input-group-text {
 	width: 100%;
 }
+
+.table-btn {
+	font-size: 0.8rem;
+}
+
+.table tr td {
+	vertical-align: middle;
+}
+
+.without-last-tr tbody tr:last-child:hover {
+	background: inherit;
+}

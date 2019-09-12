@@ -19,7 +19,9 @@ class ReportListView(LoginRequiredMixin, generic.ListView):
 	filters = {
 		'id': '',
 		'title': '',
+		'title_match': '',
 		'content': '',
+		'content_match': '',
 		'date': ''
 	}
 
@@ -28,16 +30,32 @@ class ReportListView(LoginRequiredMixin, generic.ListView):
 		if self.request.method == 'GET':
 			self.filters['id'] = self.request.GET.get('id_filter')
 			self.filters['title'] = self.request.GET.get('title_filter')
+			self.filters['title_match'] = self.request.GET.get('title_match')
 			self.filters['content'] = self.request.GET.get('content_filter')
+			self.filters['content_match'] = self.request.GET.get('content_match')
 
 			if self.filters['id']:
 				reports = reports.filter(id=self.filters['id'])
 
 			if self.filters['title']:
-				reports = reports.filter(title_text__startswith=self.filters['title'])
+				if self.filters['title_match'] == 'exact':
+					reports = reports.filter(title_text__iexact=self.filters['title'])
+				elif self.filters['title_match'] == 'starts':
+					reports = reports.filter(title_text__istartswith=self.filters['title'])
+				elif self.filters['title_match'] == 'contains':
+					reports = reports.filter(title_text__icontains=self.filters['title'])
+				elif self.filters['title_match'] == 'ends':
+					reports = reports.filter(title_text__iendswith=self.filters['title'])
 
 			if self.filters['content']:
-				reports = reports.filter(content_text__startswith=self.filters['content'])
+				if self.filters['content_match'] == 'exact':
+					reports = reports.filter(content_text__iexact=self.filters['content'])
+				elif self.filters['content_match'] == 'starts':
+					reports = reports.filter(content_text__istartswith=self.filters['content'])
+				elif self.filters['content_match'] == 'contains':
+					reports = reports.filter(content_text__icontains=self.filters['content'])
+				elif self.filters['content_match'] == 'ends':
+					reports = reports.filter(content_text__iendswith=self.filters['content'])
 
 		# TODO: filter by date
 
@@ -52,10 +70,13 @@ class ReportListView(LoginRequiredMixin, generic.ListView):
 class ProcessListView(LoginRequiredMixin, generic.ListView):
 	login_url = '/login'
 	template_name = 'reporter/report.html'
+
 	filters = {
 		'id': '',
 		'name': '',
+		'name_match': '',
 		'state': '',
+		'state_match': '',
 		'ram': '',
 		'date': ''
 	}
@@ -63,10 +84,13 @@ class ProcessListView(LoginRequiredMixin, generic.ListView):
 	def get_queryset(self):
 		processes = Process.objects.all()
 		processes = processes.filter(report=self.kwargs.get('report_id'))
+
 		if self.request.method == 'GET':
 			self.filters['id'] = self.request.GET.get('id_filter')
 			self.filters['name'] = self.request.GET.get('name_filter')
+			self.filters['name_match'] = self.request.GET.get('name_match')
 			self.filters['state'] = self.request.GET.get('state_filter')
+			self.filters['state_match'] = self.request.GET.get('state_match')
 			self.filters['ram'] = self.request.GET.get('ram_filter')
 			self.filters['date'] = self.request.GET.get('date_filter')
 
@@ -74,13 +98,28 @@ class ProcessListView(LoginRequiredMixin, generic.ListView):
 				processes = processes.filter(id=self.filters['id'])
 
 			if self.filters['name']:
-				processes = processes.filter(name_text__startswith=self.filters['name'])
+				if self.filters['name_match'] == 'exact':
+					processes = processes.filter(name_text__iexact=self.filters['name'])
+				elif self.filters['name_match'] == 'starts':
+					processes = processes.filter(name_text__istartswith=self.filters['name'])
+				elif self.filters['name_match'] == 'contains':
+					processes = processes.filter(name_text__icontains=self.filters['name'])
+				elif self.filters['name_match'] == 'ends':
+					processes = processes.filter(name_text__iendswith=self.filters['name'])
 
 			if self.filters['state']:
-				processes = processes.filter(state_text__startswith=self.filters['state'])
+				if self.filters['state_match'] == 'exact':
+					processes = processes.filter(state_text__iexact=self.filters['state'])
+				elif self.filters['state_match'] == 'starts':
+					processes = processes.filter(state_text__istartswith=self.filters['state'])
+				elif self.filters['state_match'] == 'contains':
+					processes = processes.filter(state_text__icontains=self.filters['state'])
+				elif self.filters['state_match'] == 'ends':
+					processes = processes.filter(state_text__iendswith=self.filters['state'])
 
 			if self.filters['ram']:
 				processes = processes.filter(ram_in_kb_int__startswith=int(self.filters['ram']))
+
 
 		# TODO: filter by date
 
