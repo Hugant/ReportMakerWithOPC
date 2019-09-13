@@ -12,7 +12,8 @@
 	font-size: 0.8rem;
 }
 
-.table tr td {
+.table tr td,
+.table tr th {
 	vertical-align: middle;
 }
 

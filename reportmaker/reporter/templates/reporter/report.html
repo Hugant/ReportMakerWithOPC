@@ -6,6 +6,8 @@
 	<link href="{% static 'reporter/style/style.css' %}" rel="stylesheet">
 {% endblock %}
 
+{% block title %}List processes of report - {{report.id}}{% endblock %}
+
 {% block content %}
 	<div class="container-fluid">
 		<div class="card">
@@ -16,7 +18,7 @@
 			</div>
 			<div class="card-body">
 				<div class="row">
-					<div class="col-5 col-md-5 col-lg-4">
+					<div class="col-12 col-lg-4">
 						<div class="card filters">
 							<div class="card-body">
 								<h5 class="card-title">Filters</h5>
@@ -78,7 +80,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-6 col-md-7 col-lg-8">
+					<div class="col-12 col-lg-8 mt-3 mt-lg-0">
 						<div class="card filters">
 							<div class="card-body" style="overflow-x: auto;">
 								<table class="table table-light table-hover">
@@ -104,7 +106,6 @@
 											<td class="text-center" colspan="5">Nothing to show</td>
 										</tr>
 									{% endfor %}
-									</thead>
 								</table>
 							</div>
 						</div>

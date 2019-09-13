@@ -2,20 +2,25 @@
 
 {% load static %}
 
-{% block title %}Report maker{% endblock %}
+{% block title %}ReportMaker{% endblock %}
 
 {% block content %}
-	<div class="jumbotron bg-dark text-light">
+<div class="jumbotron bg-dark text-light">
+	<div class="row">
 		<div class="col col-lg-7">
 			<h1 class="display-4">Create your reports automatically</h1>
 			<p class="lead">We help you create reports from your controllers and we will provide you with them in a pleasant visual form</p>
 			<hr class="my-4 bg-light">
 			<p>We make it better, more convenient and more beautiful</p>
 			{% if user.is_authenticated %}
-				<a class="btn btn-info btn-lg" href="{% url 'reporter:reports' %}" role="button">Go to reports</a>
+			<a class="btn btn-info btn-lg" href="{% url 'reporter:reports' %}" role="button">Go to reports</a>
 			{% else %}
-				<a class="btn btn-info btn-lg" href="{% url 'reporter:login' %}" role="button">Login</a>
+			<a class="btn btn-info btn-lg" href="{% url 'reporter:login' %}" role="button">Login</a>
 			{% endif %}
 		</div>
+		<div class="col d-flex mt-5 mt-md-0 justify-content-end justify-content-md-center">
+			<img width="300" src="{% static 'reporter/images/automation.svg' %}">
+		</div>
 	</div>
+</div>
 {% endblock %}
