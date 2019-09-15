@@ -3,18 +3,18 @@ from datetime import timedelta, datetime
 import OpenOPC
 import apscheduler
 import pytz
+import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from .models import Report, Process
 
-
+logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
 
 
 def start():
-	pass
 	if scheduler.state == apscheduler.schedulers.base.STATE_RUNNING:
 		scheduler.shutdown()
 
@@ -34,13 +34,14 @@ def start():
 
 
 def update(report_id):
+	logging.debug("Trying update report " + str(report_id))
 	try:
 		report = Report.objects.get(id=int(report_id))
 		opc = OpenOPC.client()
 		opc.connect('Matrikon.OPC.Simulation')
+		logging.debug("OPC connect completed")
 		process = opc.read('Random.Int4')
 		process_name = report.title_text + " - " + "process #" + str(Process.objects.all().filter(report=report.id).distinct().count())
-		print(timezone.now())
 		process = Process(
 			report_id=report.id,
 			name_text=process_name,
@@ -48,8 +49,10 @@ def update(report_id):
 			ram_in_kb_int=process[0],
 			date=timezone.now())
 		process.save()
-		print(process)
 		report.process_set.add(process)
-		print("created")
+		logging.debug("Process has been created by name " + process_name)
+		print("Created process " + process_name)
 	except ObjectDoesNotExist:
+		logging.debug("Remove job from scheduler by id " + report_id)
 		scheduler.remove_job(report_id)
+		print("Removed job by id " + str(report_id))

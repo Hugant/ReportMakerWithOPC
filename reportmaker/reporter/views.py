@@ -1,3 +1,4 @@
+import datetime
 import mimetypes
 import os
 
@@ -28,11 +29,13 @@ class ReportListView(LoginRequiredMixin, generic.ListView):
 	def get_queryset(self):
 		reports = Report.objects.all()
 		if self.request.method == 'GET':
-			self.filters['id'] = self.request.GET.get('id_filter')
-			self.filters['title'] = self.request.GET.get('title_filter')
+			self.filters['id'] = self.request.GET.get('id')
+			self.filters['title'] = self.request.GET.get('title')
 			self.filters['title_match'] = self.request.GET.get('title_match')
-			self.filters['content'] = self.request.GET.get('content_filter')
+			self.filters['content'] = self.request.GET.get('content')
 			self.filters['content_match'] = self.request.GET.get('content_match')
+			self.filters['date'] = self.request.GET.get('date')
+			self.filters['date_match'] = self.request.GET.get('date_match')
 
 			if self.filters['id']:
 				reports = reports.filter(id=self.filters['id'])
@@ -57,7 +60,18 @@ class ReportListView(LoginRequiredMixin, generic.ListView):
 				elif self.filters['content_match'] == 'ends':
 					reports = reports.filter(content_text__iendswith=self.filters['content'])
 
-		# TODO: filter by date
+			if self.filters['date']:
+				date = [int(item) for item in self.filters['date'].split("-")]
+				if self.filters['date_match'] == 'equal':
+					reports = reports.filter(pub_date__date=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'greater':
+					reports = reports.filter(pub_date__date__gt=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'e_greater':
+					reports = reports.filter(pub_date__date__gte=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'less':
+					reports = reports.filter(pub_date__date__lt=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'e_less':
+					reports = reports.filter(pub_date__date__lte=datetime.date(date[0], date[1], date[2]))
 
 		return reports
 
@@ -86,13 +100,15 @@ class ProcessListView(LoginRequiredMixin, generic.ListView):
 		processes = processes.filter(report=self.kwargs.get('report_id'))
 
 		if self.request.method == 'GET':
-			self.filters['id'] = self.request.GET.get('id_filter')
-			self.filters['name'] = self.request.GET.get('name_filter')
+			self.filters['id'] = self.request.GET.get('id')
+			self.filters['name'] = self.request.GET.get('name')
 			self.filters['name_match'] = self.request.GET.get('name_match')
-			self.filters['state'] = self.request.GET.get('state_filter')
+			self.filters['state'] = self.request.GET.get('state')
 			self.filters['state_match'] = self.request.GET.get('state_match')
-			self.filters['ram'] = self.request.GET.get('ram_filter')
-			self.filters['date'] = self.request.GET.get('date_filter')
+			self.filters['ram'] = self.request.GET.get('ram')
+			self.filters['ram_match'] = self.request.GET.get('ram_match')
+			self.filters['date'] = self.request.GET.get('date')
+			self.filters['date_match'] = self.request.GET.get('date_match')
 
 			if self.filters['id']:
 				processes = processes.filter(id=self.filters['id'])
@@ -118,10 +134,29 @@ class ProcessListView(LoginRequiredMixin, generic.ListView):
 					processes = processes.filter(state_text__iendswith=self.filters['state'])
 
 			if self.filters['ram']:
-				processes = processes.filter(ram_in_kb_int__startswith=int(self.filters['ram']))
+				if self.filters['ram_match'] == 'equal':
+					processes = processes.filter(ram_in_kb_int=int(self.filters['ram']))
+				elif self.filters['ram_match'] == 'greater':
+					processes = processes.filter(ram_in_kb_int__gt=int(self.filters['ram']))
+				elif self.filters['ram_match'] == 'e_greater':
+					processes = processes.filter(ram_in_kb_int__gte=int(self.filters['ram']))
+				elif self.filters['ram_match'] == 'less':
+					processes = processes.filter(ram_in_kb_int__lt=int(self.filters['ram']))
+				elif self.filters['ram_match'] == 'e_less':
+					processes = processes.filter(ram_in_kb_int__lte=int(self.filters['ram']))
 
-
-		# TODO: filter by date
+			if self.filters['date']:
+				date = [int(item) for item in self.filters['date'].split("-")]
+				if self.filters['date_match'] == 'equal':
+					processes = processes.filter(date__date=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'greater':
+					processes = processes.filter(date__date__gt=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'e_greater':
+					processes = processes.filter(date__date__gte=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'less':
+					processes = processes.filter(date__date__lt=datetime.date(date[0], date[1], date[2]))
+				elif self.filters['date_match'] == 'e_less':
+					processes = processes.filter(date__date__lte=datetime.date(date[0], date[1], date[2]))
 
 		return processes
 

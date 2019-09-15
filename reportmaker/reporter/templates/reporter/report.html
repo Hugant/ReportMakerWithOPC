@@ -33,7 +33,7 @@
 										<div class="input-group-prepend">
 											<span class="input-group-text">Name</span>
 										</div>
-										<input class="form-control" name="name_filter" placeholder="Enter phrase in name" value="{{ filters.name|default:'' }}">
+										<input class="form-control" name="name" placeholder="Enter phrase in name" value="{{ filters.name|default:'' }}">
 										<select class="custom-select bg-light" name="name_match" style="max-width: 8em">
 											<option value="exact" {% if filters.name_match == "exact" %}selected{% endif %}}}>Exact match</option>
 											<option value="starts" {% if filters.name_match == "starts" %}selected{% endif %}>Starts with</option>
@@ -45,7 +45,7 @@
 										<div class="input-group-prepend">
 											<span class="input-group-text">State</span>
 										</div>
-										<input class="form-control" name="state_filter"  placeholder="Filter by state" value="{{ filters.state|default:'' }}">
+										<input class="form-control" name="state"  placeholder="Enter phrase in state" value="{{ filters.state|default:'' }}">
 										<select class="custom-select bg-light" name="state_match" style="max-width: 8em">
 											<option value="exact" {% if filters.state_match == "exact" %}selected{% endif %}>Exact match</option>
 											<option value="starts" {% if filters.state_match == "starts" %}selected{% endif %}>Starts with</option>
@@ -57,13 +57,27 @@
 										<div class="input-group-prepend">
 											<span class="input-group-text">RAM</span>
 										</div>
-										<input class="form-control" name="ram_filter"  placeholder="Filter by RAM" value="{{ filters.ram|default:'' }}">
+										<input class="form-control" name="ram"  placeholder="Enter the amount of RAM" value="{{ filters.ram|default:'' }}">
+										<select class="custom-select bg-light" name="ram_match" style="max-width: 8em">
+											<option value="equal" {% if filters.ram_match == "equal" %}selected{% endif %}>Equal</option>
+											<option value="greater" {% if filters.ram_match == "greater" %}selected{% endif %}>Greater</option>
+											<option value="e_greater" {% if filters.ram_match == "e_greater" %}selected{% endif %}>Greater or equal</option>
+											<option value="less" {% if filters.ram_match == "less" %}selected{% endif %}>Less</option>
+											<option value="e_less" {% if filters.ram_match == "e_less" %}selected{% endif %}>Less or equal</option>
+										</select>
 									</div>
 									<div class="input-group mb-2">
 										<div class="input-group-prepend">
 											<span class="input-group-text">Date</span>
 										</div>
-										<input class="form-control" name="date_filter" placeholder="Filter by date" value="{{ filters.date|default:'' }}">
+										<input class="form-control" name="date" type="date" placeholder="Enter date" value="{{ filters.date|default:'' }}">
+										<select class="custom-select bg-light" name="date_match" style="max-width: 8em">
+											<option value="equal" {% if filters.date_match == "equal" %}selected{% endif %}>Equal</option>
+											<option value="greater" {% if filters.date_match == "greater" %}selected{% endif %}>Greater</option>
+											<option value="e_greater" {% if filters.date_match == "e_greater" %}selected{% endif %}>Greater or equal</option>
+											<option value="less" {% if filters.date_match == "less" %}selected{% endif %}>Less</option>
+											<option value="e_less" {% if filters.date_match == "e_less" %}selected{% endif %}>Less or equal</option>
+										</select>
 									</div>
 									<a href="{% url 'reporter:report' report.id %}" class="btn btn-outline-danger">Clear</a>
 									<button class="btn btn-info" type="submit" style="width: 7em;">Filter</button>
