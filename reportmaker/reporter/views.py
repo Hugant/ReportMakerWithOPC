@@ -249,14 +249,13 @@ def download_excel(request, report_id):
 	processes = Process.objects.all().filter(report=report_id)
 
 	for i, process in enumerate(processes):
-		ws.cell(row=i + 2, column=1, value=processes[i].id)
-		ws.cell(row=i + 2, column=2, value=processes[i].name_text)
-		ws.cell(row=i + 2, column=3, value=processes[i].state_text)
-		ws.cell(row=i + 2, column=4, value=processes[i].ram_in_kb_int)
-		ws.cell(row=i + 2, column=5, value=processes[i].date)
+		ws.cell(row=i+2, column=1, value=processes[i].id)
+		ws.cell(row=i+2, column=2, value=processes[i].name_text)
+		ws.cell(row=i+2, column=3, value=processes[i].state_text)
+		ws.cell(row=i+2, column=4, value=processes[i].ram_in_kb_int)
+		ws.cell(row=i+2, column=5, value=processes[i].date)
 
 	column_widths = []
-
 	for i, cell in enumerate(ws[1]):
 		column_widths += [len(cell.value)]
 
@@ -265,8 +264,6 @@ def download_excel(request, report_id):
 			length = len(str(cell.value)) + 2
 			if length > column_widths[i]:
 				column_widths[i] = length
-			else:
-				column_widths += [length]
 
 	for i, column_width in enumerate(column_widths):
 		ws.column_dimensions[get_column_letter(i + 1)].width = column_width
@@ -338,7 +335,9 @@ def user_login(request):
 	next_page = ""
 	if request.method == 'GET':
 		next_page = request.GET.get('next')
+		print(1)
 
+	next_page = ""
 	if request.method == 'POST':
 		username = request.POST['username']
 		password = request.POST['password']
@@ -347,8 +346,8 @@ def user_login(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				print(next_page)
-				if next_page != "":
+				print("'" + next_page + "'")
+				if next_page != "": # it's not work
 					return HttpResponseRedirect(next_page)
 				else:
 					return HttpResponseRedirect('/reports/')
@@ -364,4 +363,4 @@ def user_login(request):
 
 def user_logout(request):
 	logout(request)
-	return HttpResponseRedirect('')
+	return HttpResponseRedirect('/')
